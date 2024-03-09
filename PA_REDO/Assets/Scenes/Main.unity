@@ -577,13 +577,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 070240c291bb8b5459730015c862d20e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minimumWidth: 50
-  minimumDepth: 50
+  minimumWidth: 20
+  minimumDepth: 20
   terrain: {fileID: 1624070766}
   rng: {fileID: 221519245}
   maxIslands: 10
   minimumIslands: 4
   recursionDepth: 3
+  islandHeight: 0.1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

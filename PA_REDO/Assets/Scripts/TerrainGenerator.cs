@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using DataStructures;
 using UnityEngine;
 
@@ -29,6 +27,8 @@ public class TerrainGenerator : MonoBehaviour
     [SerializeField] private int maxIslands = 5;
     [SerializeField] private int minimumIslands = 2;
     [SerializeField] private int recursionDepth = 2;
+    [SerializeField] private float islandHeight = 0.2f;
+    
 
     private List<RectangleNeighbours> rectangles = new List<RectangleNeighbours>();
 
@@ -39,15 +39,10 @@ public class TerrainGenerator : MonoBehaviour
         Clear();
         
         TerrainData terrainData = terrain.terrainData;
-        int heightmapResolution = terrainData.heightmapResolution;
         Vector3 size = terrainData.bounds.size;
         
-        float[,] mesh = new float[heightmapResolution, heightmapResolution];
-
         Rectangle rectangle = new Rectangle(0, 0, (int) size.x, (int) size.z);
         SplitRectangle(rectangle);
-
-        List<Task> tasks = new List<Task>();
         
         for (int i = rectangles.Count - 1; i >= 0; i--)
         {
@@ -55,11 +50,6 @@ public class TerrainGenerator : MonoBehaviour
             {
                HandleOverlap(i,j);
             }
-        }
-
-        for (int i = 0; i < rectangles.Count; i++)
-        {
-            Debug.Log($"Rectangle {i}: {rectangles[i]}");
         }
 
         for (int i = 0; i < rng.Int(minimumIslands, maxIslands); i++)
@@ -95,6 +85,43 @@ public class TerrainGenerator : MonoBehaviour
                 }
             }
         }
+
+        float[,] heights = new float[terrainData.heightmapResolution, terrainData.heightmapResolution];
+
+        Vector3 pos = transform.position;
+        
+        foreach (Island island in islands)
+        {
+            foreach (int a in island.islandIndexes)
+            {
+                Rectangle rect = rectangles[a].Rectangle;
+                
+                int topLeftX = (int) ((rect.X - pos.x) / terrainData.size.x * terrainData.heightmapResolution);
+                int topLeftZ = (int) ((rect.Top - pos.z) / terrainData.size.z * terrainData.heightmapResolution);
+                int botRightX = (int) ((rect.Right - pos.x) / terrainData.size.x * terrainData.heightmapResolution);
+                int botRightZ = (int) ((rect.Z - pos.z) / terrainData.size.z * terrainData.heightmapResolution);
+      
+        
+                for (int rX = topLeftX; rX < botRightX; rX++)
+                {
+                    for (int rZ = botRightZ; rZ < topLeftZ; rZ++)
+                    {
+                        heights[rZ, rX] = islandHeight;
+                    }
+                }
+            }
+        }
+        
+        terrainData.SetHeights(0, 0, heights);
+        terrainData.SyncHeightmap();
+    }
+    
+    public static float Map (float x, float x1, float x2, float y1,  float y2)
+    {
+        var m = (y2 - y1) / (x2 - x1);
+        var c = y1 - m * x1; // point of interest: c is also equal to y2 - m * x2, though float math might lead to slightly different results.
+     
+        return m * x + c;
     }
 
     public void Clear()
@@ -103,6 +130,7 @@ public class TerrainGenerator : MonoBehaviour
         rectangles.Clear();
     }
 
+    
     private void HandleOverlap(int rectangleIndex, int otherIndex)
     {
         Rectangle rectangle = rectangles[rectangleIndex].Rectangle;
@@ -119,10 +147,10 @@ public class TerrainGenerator : MonoBehaviour
         for (int index = 0; index < rectangles.Count; index++)
         {
             RectangleNeighbours pair = rectangles[index];
-
+        
             RectangleExtensions.Color = Color.blue;
-            pair.Rectangle.Draw();
-
+            pair.Rectangle.Draw(drawCorners:false);
+        
             // Gizmos.color = Color.magenta;
             // for (int i = 0; i < pair.NeighbourIndexes.Count; i++)
             // {
@@ -132,6 +160,7 @@ public class TerrainGenerator : MonoBehaviour
             //                                       new Vector2(Mathf.Sin(index) * 10, Mathf.Cos(index) * 10)));
             // }
         }
+        
 
         foreach (Island island in islands)
         {
@@ -140,6 +169,8 @@ public class TerrainGenerator : MonoBehaviour
             
             RectangleExtensions.Color = Color.green;
         
+            rectangles[island.islandStartIndex].Rectangle.Draw();
+
             foreach (int index in island.islandIndexes)
             {
                 rectangles[index].Rectangle.Draw();
@@ -151,13 +182,13 @@ public class TerrainGenerator : MonoBehaviour
     {
         Rectangle newRectangle;
         
-        Debug.Log($"Splitting Rectangle: {rectangle}");
+        // Debug.Log($"Splitting Rectangle: {rectangle}");
         
         if (rectangle.Width >= minimumWidth * 2)
         {
             int minX = rectangle.X + minimumWidth;
             int maxX = rectangle.Right - minimumWidth;
-            Debug.Log($"MinX: {minX}, MaxX: {maxX}");
+            // Debug.Log($"MinX: {minX}, MaxX: {maxX}");
 
             int splitX;
             
