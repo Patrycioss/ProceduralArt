@@ -23,3 +23,6 @@ I first made an algorithm to assign the neighbours to the nodes. I then picked a
 
 ![[Pasted image 20240222013228.png]]
 ![[Pasted image 20240222013242.png]]
+
+The next step was making terrain out of these islands. I translated the coordinates of every square's top-left and bottom-right corner to the appropriate coordinates on the heightmap and then I filled in all the coordinates on the heightmap between those bounds to create the terrain. 
+![[Pasted image 20240310093844.png]]
