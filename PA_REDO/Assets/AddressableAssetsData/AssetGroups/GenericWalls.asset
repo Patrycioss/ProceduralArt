@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: GenericWalls
+  m_EditorClassIdentifier: 
+  m_GroupName: GenericWalls
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 5a870766427096449bbf1fbcdb532e26
+  m_SerializeEntries:
+  - m_GUID: 54be2a87f1748e34d8aaf9f00e582a82
+    m_Address: Assets/BuildingParts/GenericBuilding/Walls/Wall.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1ab7ef5c54c1e484b8e1c3ad16a9c571
+    m_Address: Assets/BuildingParts/GenericBuilding/Walls/Wall_Window.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: fb0cd72d81d3add42b4198e791c5fa43, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 86f3c0be97ab5204e8c996d2eb8c2a10, type: 2}
+    - {fileID: 11400000, guid: 5221f2ed4f2a7194a8759da1663388a7, type: 2}

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using DataStructures;
 using UnityEngine;
 
@@ -6,7 +7,7 @@ using UnityEngine;
 
 public class TerrainGenerator : MonoBehaviour
 {
-    private struct RectangleNeighbours
+    private struct RectangleData
     {
         public Rectangle Rectangle;
         public HashSet<int> NeighbourIndexes;
@@ -30,7 +31,7 @@ public class TerrainGenerator : MonoBehaviour
     [SerializeField] private float islandHeight = 0.2f;
     
 
-    private List<RectangleNeighbours> rectangles = new List<RectangleNeighbours>();
+    private List<RectangleData> rectangles = new List<RectangleData>();
 
     private List<Island> islands = new List<Island>();
 
@@ -40,15 +41,20 @@ public class TerrainGenerator : MonoBehaviour
         
         TerrainData terrainData = terrain.terrainData;
         Vector3 size = terrainData.bounds.size;
-        
         Rectangle rectangle = new Rectangle(0, 0, (int) size.x, (int) size.z);
         SplitRectangle(rectangle);
+
+        List<Task> tasks = new List<Task>();
+        LimitedConcurrencyLevelTaskScheduler lcts = new(8);
+        
+        TaskFactory factory = new TaskFactory(lcts);
+        
         
         for (int i = rectangles.Count - 1; i >= 0; i--)
         {
             for (int j = i - 1; j >= 0; j--)
             {
-               HandleOverlap(i,j);
+                HandleOverlap(i, j);
             }
         }
 
@@ -58,70 +64,67 @@ public class TerrainGenerator : MonoBehaviour
 
             Island island = new Island
             {
-                islandIndexes = new HashSet<int>
-                {
-                    index
-                },
+                islandIndexes = new HashSet<int> { index },
                 islandStartIndex = index
             };
 
             island.islandIndexes.Add(index);
-            AddFromSquareToIsland(index, 0);
+            AddFromSquareToIsland(index, 0, island);
             islands.Add(island);
-            continue;
-
-            void AddFromSquareToIsland(int squareIndex, int count)
-            {
-                count++;
-
-                foreach (int neighbourIndex in rectangles[squareIndex].NeighbourIndexes)
-                {
-                    island.islandIndexes.Add(neighbourIndex);
-
-                    if (count != recursionDepth)
-                    {
-                        AddFromSquareToIsland(neighbourIndex, count);
-                    }
-                }
-            }
         }
 
         float[,] heights = new float[terrainData.heightmapResolution, terrainData.heightmapResolution];
 
         Vector3 pos = transform.position;
+
+        Vector3 terrainSize = terrainData.size;
+        int heightmapResolution = terrainData.heightmapResolution;
         
         foreach (Island island in islands)
         {
-            foreach (int a in island.islandIndexes)
+            Task t = factory.StartNew(() =>
             {
-                Rectangle rect = rectangles[a].Rectangle;
-                
-                int topLeftX = (int) ((rect.X - pos.x) / terrainData.size.x * terrainData.heightmapResolution);
-                int topLeftZ = (int) ((rect.Top - pos.z) / terrainData.size.z * terrainData.heightmapResolution);
-                int botRightX = (int) ((rect.Right - pos.x) / terrainData.size.x * terrainData.heightmapResolution);
-                int botRightZ = (int) ((rect.Z - pos.z) / terrainData.size.z * terrainData.heightmapResolution);
-      
-        
-                for (int rX = topLeftX; rX < botRightX; rX++)
+                foreach (int a in island.islandIndexes)
                 {
-                    for (int rZ = botRightZ; rZ < topLeftZ; rZ++)
+                    Rectangle rect = rectangles[a].Rectangle;
+
+                    int topLeftX = (int) ((rect.X - pos.x) / terrainSize.x * heightmapResolution);
+                    int topLeftZ = (int) ((rect.Top - pos.z) / terrainSize.z * heightmapResolution);
+                    int botRightX = (int) ((rect.Right - pos.x) / terrainSize.x * heightmapResolution);
+                    int botRightZ = (int) ((rect.Z - pos.z) / terrainSize.z * heightmapResolution);
+
+                    for (int rX = topLeftX; rX < botRightX; rX++)
                     {
-                        heights[rZ, rX] = islandHeight;
+                        for (int rZ = botRightZ; rZ < topLeftZ; rZ++)
+                        {
+                            heights[rZ, rX] = islandHeight;
+                        }
                     }
                 }
-            }
+            });
+            
+            tasks.Add(t);
         }
+
+        Task.WaitAll(tasks.ToArray());
         
         terrainData.SetHeights(0, 0, heights);
         terrainData.SyncHeightmap();
     }
-    
-    public static float Map (float x, float x1, float x2, float y1,  float y2)
+
+    private void AddFromSquareToIsland(int squareIndex, int count, Island island)
     {
-        var m = (y2 - y1) / (x2 - x1);
-        var c = y1 - m * x1; // point of interest: c is also equal to y2 - m * x2, though float math might lead to slightly different results.
-     
-        return m * x + c;
+        count++;
+
+        foreach (int neighbourIndex in rectangles[squareIndex].NeighbourIndexes)
+        {
+            island.islandIndexes.Add(neighbourIndex);
+
+            if (count != recursionDepth)
+            {
+                AddFromSquareToIsland(neighbourIndex, count, island);
+            }
+        }
     }
 
     public void Clear()
@@ -146,7 +149,7 @@ public class TerrainGenerator : MonoBehaviour
         
         for (int index = 0; index < rectangles.Count; index++)
         {
-            RectangleNeighbours pair = rectangles[index];
+            RectangleData pair = rectangles[index];
         
             RectangleExtensions.Color = Color.blue;
             pair.Rectangle.Draw(drawCorners:false);
@@ -182,14 +185,10 @@ public class TerrainGenerator : MonoBehaviour
     {
         Rectangle newRectangle;
         
-        // Debug.Log($"Splitting Rectangle: {rectangle}");
-        
         if (rectangle.Width >= minimumWidth * 2)
         {
             int minX = rectangle.X + minimumWidth;
             int maxX = rectangle.Right - minimumWidth;
-            // Debug.Log($"MinX: {minX}, MaxX: {maxX}");
-
             int splitX;
             
             if (minX >= maxX)
@@ -229,7 +228,7 @@ public class TerrainGenerator : MonoBehaviour
         }
         else
         {
-            rectangles.Add(new RectangleNeighbours
+            rectangles.Add(new RectangleData
             {
                 Rectangle = rectangle,
                 NeighbourIndexes = new HashSet<int>()

@@ -31,31 +31,17 @@ namespace DataStructures
 
 		public static bool Overlaps(this Rectangle rect, Rectangle other)
 		{
-			if (other.X >= rect.X && other.X <= rect.Right 
+			bool xAxisOverlaps = 
+				other.X >= rect.X && other.X <= rect.Right
 			    || other.Right >= rect.X && other.Right <= rect.Right
-			    || other.X <= rect.X && other.Right >= rect.Right)
-			{
-				if ((other.Top >= rect.Top && other.Z <= rect.Z)
-				    || (other.Top <= rect.Top && other.Top >= rect.Z)
-				    || (other.Z <= rect.Top && other.Z >= rect.Z))
-				{
-					return true;
-				}
-			}
+			    || other.X <= rect.X && other.Right >= rect.Right;
 
-			if (other.Z >= rect.Z && other.Z <= rect.Top
-			    || other.Top >= rect.Z && other.Top <= rect.Top
-			    || other.Z <= rect.Z && other.Top >= rect.Top)
-			{
-				if ((other.Right >= rect.Right && other.X <= rect.X)
-				    || (other.Right <= rect.Right && other.Right >= rect.X)
-				    || (other.X <= rect.Right && other.X >= rect.X))
-				{
-					return true;
-				}
-			}
-			
-			return false;
+			bool zAxisOverlaps =
+				(other.Top >= rect.Top && other.Z <= rect.Z)
+				|| (other.Top <= rect.Top && other.Top >= rect.Z)
+				|| (other.Z <= rect.Top && other.Z >= rect.Z);
+
+			return xAxisOverlaps && zAxisOverlaps;
 		}
 
 		public static Vector3 ToVector3(Vector2 v2)
