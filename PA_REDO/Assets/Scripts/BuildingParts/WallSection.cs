@@ -38,6 +38,7 @@ namespace BuildingParts
 
 			WallPartCount = wallAmount;
 			Height = height;
+			Skip = skip;
 
 			for (int i = 0; i < wallAmount; i++)
 			{
@@ -97,7 +98,7 @@ namespace BuildingParts
 			{
 				Parent = transform,
 				Position = wall.Object.transform.position,
-				Rotation = Quaternion.identity,
+				Rotation = transform.rotation,
 			};
 
 			if (buildingPartManager.WallGroup.TryInstantiateEntryAtIndex(partIdentifier, details,

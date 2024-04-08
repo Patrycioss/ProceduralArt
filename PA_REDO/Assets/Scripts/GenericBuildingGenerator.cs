@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 using BuildingParts;
-using Unity.Mathematics;
 using UnityEngine;
 
 public class GenericBuildingGenerator : MonoBehaviour
 {
-	[SerializeField] private List<WallSection> wallSections;
+	[SerializeField] private List<Block> blocks;
 	[SerializeField] private FloorPlan floorPlan;
 	[SerializeField] private RNG rng;
 	[SerializeField] private BuildingPartManager buildingPartManager;
@@ -36,6 +35,14 @@ public class GenericBuildingGenerator : MonoBehaviour
 
 				Vector3 partPosition = centerPos + new Vector3(distX, 0, distZ);
 
+				GameObject blockObject = new GameObject($"Block {blocks.Count + 1}");
+				blockObject.transform.parent = transform;
+				blockObject.transform.position = partPosition;
+
+				Transform blockTransform = blockObject.transform;
+				Block block = blockObject.AddComponent<Block>();
+				blocks.Add(block);
+
 				// Left
 				{
 					int jIndex = j - 1;
@@ -52,11 +59,15 @@ public class GenericBuildingGenerator : MonoBehaviour
 						}
 					}
 
-					Vector3 pos = partPosition + new Vector3(-0.5f, 0, 0);
-					if (TryMakeSection(pos, 90, amount, height, skip, out WallSection wallSection))
+					if (TryMakeSection(amount, height, skip, out WallSection section))
 					{
-						
-					};
+						Transform sectionTransform = section.transform;
+						sectionTransform.name = "Left";
+						sectionTransform.parent = blockTransform;
+						sectionTransform.position = partPosition + new Vector3(-0.5f, 0, 0);
+						section.transform.Rotate(0,90,0);
+						block.LeftWall = section;
+					}
 				}
 
 				// Right
@@ -75,14 +86,18 @@ public class GenericBuildingGenerator : MonoBehaviour
 						}
 					}
 
-					Vector3 pos = partPosition + new Vector3(0.5f, 0, 0);
-					if (TryMakeSection(pos, 270, amount, height, skip, out WallSection wallSection))
+					if (TryMakeSection(amount, height, skip, out WallSection section))
 					{
-						
-					};
+						Transform sectionTransform = section.transform;
+						sectionTransform.name = "Right";
+						sectionTransform.parent = blockTransform;
+						sectionTransform.position = partPosition + new Vector3(0.5f, 0, 0);
+						section.transform.Rotate(0,270,0);
+						block.RightWall = section;
+					}
 				}
 
-				// Back
+				// Front
 				{
 					int iIndex = i - 1;
 					int amount = height;
@@ -98,14 +113,17 @@ public class GenericBuildingGenerator : MonoBehaviour
 						}
 					}
 					
-					Vector3 pos = partPosition + new Vector3(0, 0, -0.5f);
-					if (TryMakeSection(pos, 0, amount, height, skip, out WallSection section))
+					if (TryMakeSection(amount, height, skip, out WallSection section))
 					{
-						
-					};
+						Transform sectionTransform = section.transform;
+						sectionTransform.name = "Front";
+						sectionTransform.parent = blockTransform;
+						sectionTransform.position = partPosition + new Vector3(0, 0, -0.5f);
+						block.FrontWall = section;
+					}
 				}
 
-				// Front
+				// Back
 				{
 					int iIndex = i + 1;
 					int amount = height;
@@ -121,17 +139,22 @@ public class GenericBuildingGenerator : MonoBehaviour
 						}
 					}
 
-					Vector3 pos = partPosition + new Vector3(0, 0, 0.5f);
-					if (TryMakeSection(pos, 180, amount, height, skip, out WallSection section))
+					if (TryMakeSection(amount, height, skip, out WallSection section))
 					{
-						
+						Transform sectionTransform = section.transform;
+						sectionTransform.name = "Back";
+						sectionTransform.parent = blockTransform;
+						sectionTransform.position = partPosition + new Vector3(0, 0, 0.5f);
+						section.transform.Rotate(0,180,0);
+						block.BackWall = section;
 					}
 				}
+				
 			}
 		}
 	}
 
-	private bool TryMakeSection(Vector3 position, float rotation, int amount, int height, int skip, out WallSection section)
+	private bool TryMakeSection(int amount, int height, int skip, out WallSection section)
 	{
 		if (height <= 0 || amount <= 0)
 		{
@@ -139,22 +162,12 @@ public class GenericBuildingGenerator : MonoBehaviour
 			return false;
 		}
 
-		GameObject sectionObject = new GameObject($"WallSection {wallSections.Count + 1}")
-		{
-			transform =
-			{
-				parent = transform,
-				position = position,
-			}
-		};
-		
-		sectionObject.transform.Rotate(0,rotation,0);
-		
+		GameObject sectionObject = new GameObject("Block");
 		WallSection wallSection = sectionObject.AddComponent<WallSection>();
+		
 		wallSection.InjectDependencies(buildingPartManager, rng);
 		wallSection.Generate(amount, height, skip);
 		section = wallSection;
-		wallSections.Add(section);
 		return true;
 	}
 
@@ -165,6 +178,6 @@ public class GenericBuildingGenerator : MonoBehaviour
 			DestroyImmediate(transform.GetChild(i).gameObject);
 		}
 
-		wallSections.Clear();
+		blocks.Clear();
 	}
 }

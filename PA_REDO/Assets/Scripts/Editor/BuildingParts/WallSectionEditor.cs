@@ -21,10 +21,10 @@ namespace Editor.BuildingParts
 			wallSection.Height = EditorGUILayout.IntField(wallSection.Height);
 			EditorGUILayout.EndHorizontal();
 			
-			EditorGUILayout.BeginHorizontal();
-			GUILayout.Label("Skip: ");
-			wallSection.Skip = EditorGUILayout.IntField(wallSection.Skip);
-			EditorGUILayout.EndHorizontal();
+			// EditorGUILayout.BeginHorizontal();
+			// GUILayout.Label("Skip: ");
+			// wallSection.Skip = EditorGUILayout.IntField(wallSection.Skip);
+			// EditorGUILayout.EndHorizontal();
 			
 
 			if (GUILayout.Button("Regenerate")) 
