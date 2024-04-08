@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections;
+using System.Linq;
 using BuildingParts;
 using UnityEditor;
 using UnityEngine;
@@ -16,9 +17,8 @@ namespace Editor.BuildingParts
 
 			WallSection wallSection = (WallSection) property.FindPropertyRelative("WallSection").objectReferenceValue;
 
-			GUIContent newLabel = label;
-			newLabel.text = label.text.Split("/").Last();
-			position = EditorGUI.PrefixLabel(labelPosition, GUIUtility.GetControlID(FocusType.Passive), newLabel);
+			label.text = label.text.Split("/").Last();
+			position = EditorGUI.PrefixLabel(labelPosition, GUIUtility.GetControlID(FocusType.Passive), label);
 
 			int indent = EditorGUI.indentLevel;
 			EditorGUI.indentLevel = 0;
@@ -27,24 +27,16 @@ namespace Editor.BuildingParts
 			SerializedProperty objectProperty = property.FindPropertyRelative("Object");
 
 			Rect objectRect = new Rect(position.x, position.y, 170, position.height);
-			// Rect buttonRect = new Rect(position.x + 70, position.y, 100, position.height);
 			Rect typeRect = new Rect(position.x + 180, position.y, 100, position.height);
 
-			// typeProperty.intValue = EditorGUI.IntField(typeRect, typeProperty.intValue);
 			EditorGUI.ObjectField(objectRect, objectProperty.objectReferenceValue,
 				typeof(GameObject), false);
 
-			string[] options = wallSection.GetWallOptions();
-			
-			
-			// int typeIndex = options.ToList().IndexOf(typeProperty.stringValue);
+			IEnumerable options = wallSection.GetWallOptions();
 
-			// typeProperty.stringValue = options[EditorGUILayout.Popup(new GUIContent("Wall Options"), typeIndex, options)];
-
-			GUIContent dropdownLabel = label;
 			label.text = typeProperty.stringValue.Split("/".ToCharArray()).Last();
 			
-			if (EditorGUI.DropdownButton(typeRect, dropdownLabel, FocusType.Passive))
+			if (EditorGUI.DropdownButton(typeRect, label, FocusType.Passive))
 			{
 				GenericMenu menu = new GenericMenu();
 			
@@ -62,14 +54,6 @@ namespace Editor.BuildingParts
 				
 				menu.DropDown(typeRect);
 			}
-
-
-			// if (GUI.Button(buttonRect, "Regen"))
-			// {
-			// 	wallSection.SetWall((Wall) property.boxedValue, typeProperty.stringValue);
-			// }
-
-			
 
 			EditorGUI.indentLevel = indent;
 			EditorGUI.EndProperty();

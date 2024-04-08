@@ -1,5 +1,4 @@
-﻿using BuildingParts;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace Editor.BuildingParts

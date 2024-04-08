@@ -41,13 +41,14 @@ public static class ExtensionMethods
 		int index = rng.Int(0, group.entries.Count - 1);
 		AddressableAssetEntry entry = group.entries.ElementAt(index);
 		
-		AsyncOperationHandle<GameObject> handle = Addressables.InstantiateAsync(entry.address, details.Position, details.Rotation, details.Parent);
+		AsyncOperationHandle<GameObject> handle =
+			Addressables.InstantiateAsync(entry.address, details.Position, details.Rotation, details.Parent);
 		gameObject = handle.Result;
 		identifier = entry.ToString();
 		return true;
 	}
 	
-	public static bool TryInstantiateEntryAtIndex(this AddressableAssetGroup group, RNG rng, string newIdentifier, InstantiationDetails details, out GameObject gameObject, out string identifier)
+	public static bool TryInstantiateEntryAtIndex(this AddressableAssetGroup group, string newIdentifier, InstantiationDetails details, out GameObject gameObject, out string identifier)
 	{
 		if (string.IsNullOrEmpty(newIdentifier))
 		{
