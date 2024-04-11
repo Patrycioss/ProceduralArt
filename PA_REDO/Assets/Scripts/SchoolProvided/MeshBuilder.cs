@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace SchoolProvided
+namespace _Scripts.SchoolMeshGeneration
 {
 	public class MeshBuilder {
 

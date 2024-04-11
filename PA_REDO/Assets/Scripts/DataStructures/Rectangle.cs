@@ -12,23 +12,31 @@ namespace DataStructures
 	///   |          |
 	/// 0,0 ------- 1,0     X -->
 	/// </summary>
+	[Serializable]
 	public struct Rectangle
 	{
-		public int X;
-		public int Z;
-		public int Width;
-		public int Depth;
-		public int Right => X + Width;
-		public int Top => Z + Depth;
-		public int HWidth => Width / 2;
-		public int HDepth => Depth / 2;
+		public float X;
+		public float Z;
+		public float Width;
+		public float Depth;
+		public float Right => X + Width;
+		public float Top => Z + Depth;
+		public float HWidth => Width / 2;
+		public float HDepth => Depth / 2;
 		public Vector2 Center => new Vector2(X + HWidth,Z + HDepth);
 		public Vector2 TopLeft => new Vector2(X, Z + Depth);
 		public Vector2 TopRight => new Vector2(X + Width, Z + Depth);
 		public Vector2 BotLeft => new Vector2(X, Z);
 		public Vector2 BotRight => new Vector2(X + Width, Z);
 
-		public Rectangle(int x, int z, int width, int depth)
+		public Vector3 Center3 => new Vector3(X + HWidth, 0, Z + HDepth);
+		public Vector3 TopLeft3 => new Vector3(X, 0, Z + Depth);
+		public Vector3 TopRight3 => new Vector3(X + Width, 0, Z + Depth);
+		public Vector3 BotLeft3 => new Vector3(X, 0, Z);
+		public Vector3 BotRight3 => new Vector3(X + Width, 0, Z);
+		
+
+		public Rectangle(float x, float z, float width, float depth)
 		{
 			X = x;
 			Z = z;

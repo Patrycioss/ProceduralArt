@@ -5,13 +5,19 @@ namespace DataStructures
 	public static class RectangleExtensions
 	{
 		public static Color Color;
+		public static float Radius = 4.0f;
 		
-		public static void Draw(this Rectangle rectangle, bool drawLines = true, bool drawCorners = true)
+		public static void Draw(this Rectangle rectangle, Vector3 offset, bool drawLines = true, bool drawCorners = true)
 		{
-			Vector3 tL = ToVector3(rectangle.TopLeft);
-			Vector3 tR = ToVector3(rectangle.TopRight);
-			Vector3 bR = ToVector3(rectangle.BotRight);
-			Vector3 bL = ToVector3(rectangle.BotLeft);
+			// Vector3 tL = ToVector3(rectangle.TopLeft);
+			// Vector3 tR = ToVector3(rectangle.TopRight);
+			// Vector3 bR = ToVector3(rectangle.BotRight);
+			// Vector3 bL = ToVector3(rectangle.BotLeft);
+
+			Vector3 tL = rectangle.TopLeft3 + offset;
+			Vector3 tR = rectangle.TopRight3 + offset;
+			Vector3 bR = rectangle.BotRight3 + offset;
+			Vector3 bL = rectangle.BotLeft3 + offset;
 			
 			if (drawLines)
 			{
@@ -22,10 +28,10 @@ namespace DataStructures
 			if (drawCorners)
 			{
 				Gizmos.color = Color;
-				Gizmos.DrawSphere(tL, 4);
-				Gizmos.DrawSphere(tR, 4);
-				Gizmos.DrawSphere(bR, 4);
-				Gizmos.DrawSphere(bL, 4);
+				Gizmos.DrawSphere(tL, Radius);
+				Gizmos.DrawSphere(tR, Radius);
+				Gizmos.DrawSphere(bR, Radius);
+				Gizmos.DrawSphere(bL, Radius);
 			}
 		}
 

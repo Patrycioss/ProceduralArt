@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DataStructures;
@@ -152,7 +153,7 @@ public class TerrainGenerator : MonoBehaviour
             RectangleData pair = rectangles[index];
         
             RectangleExtensions.Color = Color.blue;
-            pair.Rectangle.Draw(drawCorners:false);
+            pair.Rectangle.Draw(transform.position,drawCorners:false);
         
             // Gizmos.color = Color.magenta;
             // for (int i = 0; i < pair.NeighbourIndexes.Count; i++)
@@ -172,11 +173,11 @@ public class TerrainGenerator : MonoBehaviour
             
             RectangleExtensions.Color = Color.green;
         
-            rectangles[island.islandStartIndex].Rectangle.Draw();
+            rectangles[island.islandStartIndex].Rectangle.Draw(transform.position);
 
             foreach (int index in island.islandIndexes)
             {
-                rectangles[index].Rectangle.Draw();
+                rectangles[index].Rectangle.Draw(transform.position);
             }
         }
     }
@@ -187,9 +188,9 @@ public class TerrainGenerator : MonoBehaviour
         
         if (rectangle.Width >= minimumWidth * 2)
         {
-            int minX = rectangle.X + minimumWidth;
-            int maxX = rectangle.Right - minimumWidth;
-            int splitX;
+            float minX = rectangle.X + minimumWidth;
+            float maxX = rectangle.Right - minimumWidth;
+            float splitX;
             
             if (minX >= maxX)
             {
@@ -197,7 +198,7 @@ public class TerrainGenerator : MonoBehaviour
             }
             else
             {
-                splitX = rng.Int(minX, maxX);
+                splitX = rng.Float(minX, maxX);
             }
 
             newRectangle = new Rectangle(splitX, rectangle.Z, rectangle.Right - splitX, 
@@ -207,18 +208,18 @@ public class TerrainGenerator : MonoBehaviour
         }
         else if (rectangle.Depth >= minimumDepth * 2)
         {
-            int minZ = rectangle.Z + minimumDepth;
-            int maxZ = rectangle.Top - minimumDepth;
+            float minZ = rectangle.Z + minimumDepth;
+            float maxZ = rectangle.Top - minimumDepth;
 
-            int splitZ;
+            float splitZ;
 
-            if (minZ == maxZ)
+            if (Math.Abs(minZ - maxZ) < 0.001f)
             {
                 splitZ = minZ;
             }
             else
             {
-                splitZ = rng.Int(minZ, maxZ);
+                splitZ = rng.Float(minZ, maxZ);
             }
             
             newRectangle = new Rectangle(rectangle.X, splitZ, rectangle.Width,
