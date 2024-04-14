@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DataStructures;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [RequireComponent(typeof(LayoutGenerator))]
 public class RoadGenerator : MonoBehaviour
@@ -61,37 +62,36 @@ public class RoadGenerator : MonoBehaviour
 	}
 
 	[SerializeField] private Material material;
-	
-	private List<Rectangle> rects = new List<Rectangle>();
+	[SerializeField] private Material crossWalkMaterial;
+	[SerializeField] private Material intersectionMaterial;
 
-	private IReadOnlyDictionary<Rectangle, HashSet<Rectangle>> rectangleNeighbours;
-	[SerializeField] private List<Road> roads1;
-	
+	private List<Rectangle> rects = new();
+	private List<Road> roads;
 
 	public void Generate()
 	{
 		Clear();
 
-		rectangleNeighbours = gameObject.GetComponent<LayoutGenerator>().RectanglesWithNeighbours;
+		IReadOnlyDictionary<Rectangle, HashSet<Rectangle>> rectangleNeighbours = gameObject.GetComponent<LayoutGenerator>().RectanglesWithNeighbours;
 		rects = rectangleNeighbours.Keys.ToList();
 
 		List<Intersection> intersections = DetermineIntersections(rects);
-		roads1 = DetermineRoads(intersections);
-		MakeRoads(roads1);
+		roads = DetermineRoads(intersections);
+		MakeRoads(roads);
 		MakeIntersections(intersections);
 	}
 
-	private void MakeRoads(List<Road> roads)
+	private void MakeRoads(List<Road> roadsToMake)
 	{
 		GameObject roadContainer = new GameObject($"Road Container");
 		roadContainer.transform.parent = transform;
 		roadContainer.transform.position = transform.position;
 
 		int number = 1;
-		foreach (Road road in roads)
+		foreach (Road road in roadsToMake)
 		{
 			GameObject roadObject = new GameObject($"Road {number}");
-			roadObject.transform.localPosition = new Vector3(road.Center.x, transform.position.y, road.Center.z);
+			roadObject.transform.localPosition = transform.position + new Vector3(road.Center.x, 0, road.Center.z);
 			roadObject.transform.parent = roadContainer.transform;
 			number++;
 
@@ -109,14 +109,14 @@ public class RoadGenerator : MonoBehaviour
 
 			for (int i = 0; i < road.Size; i++)
 			{
-				GameObject roadPart = new GameObject($"RoadPart {i}");
+				GameObject roadPart = new GameObject($"RoadPart {i + 1}");
 				roadPart.transform.parent = roadObject.transform;
 				roadPart.transform.localPosition =
 					startPos + (i * add);
 
-				if (!road.Horizontal)
+				if (road.Horizontal)
 				{
-					roadPart.transform.Rotate(0,90,0);
+					roadPart.transform.Rotate(0, 90, 0);
 				}
 
 				Mesh mesh = new Mesh
@@ -146,9 +146,16 @@ public class RoadGenerator : MonoBehaviour
 				mesh.RecalculateBounds();
 				mesh.RecalculateNormals();
 				mesh.RecalculateTangents();
+
+				Material materialToUse = material;
 				
+				if (i == 0 || i == road.Size - 1)
+				{
+					materialToUse = crossWalkMaterial;
+				}
+
 				roadPart.AddComponent<MeshFilter>().mesh = mesh;
-				roadPart.AddComponent<MeshRenderer>().material = material;
+				roadPart.AddComponent<MeshRenderer>().material = materialToUse;
 			}
 		}
 	}
@@ -157,9 +164,45 @@ public class RoadGenerator : MonoBehaviour
 	{
 		GameObject intersectionContainer = new GameObject($"Intersection Container");
 		intersectionContainer.transform.parent = transform;
+		intersectionContainer.transform.position = transform.position;
 
-		foreach (Intersection intersection in intersections)
+		for (int index = 0; index < intersections.Count; index++)
 		{
+			Intersection intersection = intersections[index];
+			GameObject intersectionObject = new GameObject($"Intersection {index + 1}");
+			intersectionObject.transform.localPosition = transform.position + new Vector3(intersection.Position.x, 0, intersection.Position.z);
+			intersectionObject.transform.parent = intersectionContainer.transform;
+
+			Mesh mesh = new Mesh
+			{
+				vertices = new[]
+				{
+					new Vector3(-0.5f, 0, 0.5f), //TL
+					new Vector3(-0.5f, 0, -0.5f), //BL
+					new Vector3(0.5f, 0, -0.5f), //BR
+					new Vector3(0.5f, 0, 0.5f), //TR
+				},
+				uv = new[]
+				{
+					new Vector2(0, 1), //TL
+					new Vector2(0, 0), //BL
+					new Vector2(1, 0), //BR
+					new Vector2(1, 1), //TR
+				},
+				triangles = new[]
+				{
+					0, 3, 2, //TR
+					2, 1, 0, //BL
+				}
+			};
+
+			mesh.Optimize();
+			mesh.RecalculateBounds();
+			mesh.RecalculateNormals();
+			mesh.RecalculateTangents();
+
+			intersectionObject.AddComponent<MeshFilter>().mesh = mesh;
+			intersectionObject.AddComponent<MeshRenderer>().material = intersectionMaterial;
 		}
 	}
 

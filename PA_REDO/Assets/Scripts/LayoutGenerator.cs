@@ -15,9 +15,7 @@ public class LayoutGenerator : MonoBehaviour
 	[SerializeField] private int minSpaceWidth = 2;
 	[SerializeField] private int minSpaceDepth = 2;
 
-	[SerializeField] private List<Rectangle> rectangles;
-	
-
+	private List<Rectangle> rectangles;
 	private Dictionary<Rectangle, HashSet<Rectangle>> rectanglesWithNeighbours = new Dictionary<Rectangle, HashSet<Rectangle>>();
 	
 	public void Generate()

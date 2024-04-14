@@ -302,5 +302,8 @@ My reference image is not detailed enough to know what materials I want to use s
 ![[1460658354962tim-burton-visual-analysis-17.avif]]
 
 The main materials that I want to make are worn concrete like on the top-right and bricks like you can see on the building in the background.
+For the roads the double lines down the middle.
+
+
 ![[unnamed.jpg]]
 ![[batman-gotham-city-chronicles-roleplaying-game-artwork.webp]]

@@ -75,9 +75,12 @@ public class MeshCombiner : MonoBehaviour
 			{
 				Material material = meshRenderer.sharedMaterial;
 
-				if (!materialFilters.TryAdd(material, new List<MeshFilter> {meshFilter}))
+				if (material != null)
 				{
-					materialFilters[material].Add(meshFilter);
+					if (!materialFilters.TryAdd(material, new List<MeshFilter> {meshFilter}))
+					{
+						materialFilters[material].Add(meshFilter);
+					}
 				}
 			}
 		}
