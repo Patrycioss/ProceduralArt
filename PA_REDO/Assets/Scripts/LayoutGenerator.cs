@@ -35,13 +35,13 @@ public class LayoutGenerator : MonoBehaviour
 
 	private void OnDrawGizmos()
 	{
-		Vector3 tPos = transform.position;
-		
-		foreach (Rectangle rectangle in rectanglesWithNeighbours.Keys)
-		{
-			RectangleExtensions.Color = Color.green;
-			RectangleExtensions.Radius = 0.1f;
-			rectangle.Draw(tPos);
-		}
+		// Vector3 tPos = transform.position;
+		//
+		// foreach (Rectangle rectangle in rectanglesWithNeighbours.Keys)
+		// {
+		// 	RectangleExtensions.Color = Color.green;
+		// 	RectangleExtensions.Radius = 0.1f;
+		// 	rectangle.Draw(tPos);
+		// }
 	}
 }

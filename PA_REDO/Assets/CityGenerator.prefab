@@ -12556,6 +12556,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   foundationMaterial: {fileID: 2100000, guid: cc1412dd0530a8a4a957f0d2d260bdb5, type: 2}
   foundationTileSize: 1
+  buildingPrefab: {fileID: 2423899944234852432, guid: 63a077f5aef7b2b4ea3a045d282017c3,
+    type: 3}
+  buildingWidth: {x: 4, y: 4}
+  buildingDepth: {x: 4, y: 4}
+  buildingHeight: {x: 2, y: 4}
 --- !u!114 &3835540009109064529
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12601,6 +12606,7 @@ MonoBehaviour:
   crossWalkMaterial: {fileID: 2100000, guid: cc1412dd0530a8a4a957f0d2d260bdb5, type: 2}
   intersectionMaterial: {fileID: 2100000, guid: c6f471c343ae78e4c8938c092d995e4e,
     type: 2}
+  roadWidth: 1
 --- !u!33 &1984859820584129130
 MeshFilter:
   m_ObjectHideFlags: 0

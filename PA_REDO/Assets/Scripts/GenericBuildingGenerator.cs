@@ -3,12 +3,19 @@ using BuildingParts;
 using UnityEngine;
 
 public class GenericBuildingGenerator : MonoBehaviour
-{
-	[SerializeField] private List<Block> blocks;
-	[SerializeField] private FloorPlan floorPlan;
-	[SerializeField] private RNG rng;
-	[SerializeField] private BuildingPartManager buildingPartManager;
+{	
+	[SerializeField] public FloorPlan floorPlan;
+	
+	[SerializeField] private List<Block> blocks = new();
+	private RNG rng;
+	private BuildingPartManager buildingPartManager;
 
+	public void InjectDependencies(RNG _rng, BuildingPartManager _buildingPartManager)
+	{
+		rng = _rng;
+		buildingPartManager = _buildingPartManager;
+	}
+	
 	public void Generate()
 	{
 		Clear();

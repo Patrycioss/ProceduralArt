@@ -14,8 +14,8 @@ namespace BuildingParts
 		[SerializeField] private List<Wall> walls = new List<Wall>();
 		[SerializeField] private List<GameObject> wallDecos = new List<GameObject>();
 
-		[SerializeField] private BuildingPartManager buildingPartManager;
-		[SerializeField] private RNG rng;
+		private BuildingPartManager buildingPartManager;
+		private RNG rng;
 
 		public void InjectDependencies(BuildingPartManager buildingPartManager, RNG rng)
 		{
@@ -31,7 +31,7 @@ namespace BuildingParts
 		public void Generate(int wallAmount, int height, int skip)
 		{
 			Clear();
-			Debug.Log($"Called WallSection.Generate() with wallAmount: {wallAmount} and height: {height}");
+			// Debug.Log($"Called WallSection.Generate() with wallAmount: {wallAmount} and height: {height}");
 
 			Transform thisTransform = transform;
 			Vector3 thisPos = thisTransform.position;

@@ -1,19 +1,40 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using BuildingParts;
 using DataStructures;
 using UnityEngine;
 
 [RequireComponent(typeof(LayoutGenerator))]
 [RequireComponent(typeof(RoadGenerator))]
 [RequireComponent(typeof(SideWalkBuilder))]
+[RequireComponent(typeof(BuildingPartManager))]
+[RequireComponent(typeof(RNG))]
 public class CityGenerator : MonoBehaviour
 {
     [SerializeField] private Material foundationMaterial;
     [SerializeField] private float foundationTileSize = 1.0f;
 
+    [SerializeField] private GameObject buildingPrefab;
+    [SerializeField] private Vector2Int buildingWidth = new(4,4);
+    [SerializeField] private Vector2Int buildingDepth = new(4,4);
+    [SerializeField] private Vector2Int buildingHeight = new(2,4);
+    [SerializeField] private Vector3 buildingScale = new Vector3(0.5f,0.5f,0.5f);
+    
+    
     private const float RoadWidth = 1.0f;
     
+    
+    
+    private List<GenericBuildingGenerator> buildings = new();
+    private List<Rectangle> buildingRectangles;
+
     public void FullGenerate()
     {
+        FullClear();
+        
+        RNG rng = GetComponent<RNG>();
+        BuildingPartManager buildingPartManager = GetComponent<BuildingPartManager>();
+        
         // Maybe introduce a big scriptable object that contains all the settings so I can just pass that along here
         LayoutGenerator layoutGenerator = GetComponent<LayoutGenerator>();
         layoutGenerator.Generate();
@@ -44,20 +65,73 @@ public class CityGenerator : MonoBehaviour
             foundationObject.AddComponent<MeshRenderer>().material = foundationMaterial;
             index++;
 
-
-            Rectangle foundationRectangle = new Rectangle()
+            Rectangle foundationRectangle = new()
             {
-                X = rect.X,
-                Z = rect.Z,
+                X = rect.X + RoadWidth/2.0f + sideWalkWidth,
+                Z = rect.Z + RoadWidth/2.0f + sideWalkWidth,
                 Depth = rect.Depth - RoadWidth - (sideWalkWidth * 2),
                 Width = rect.Width - RoadWidth - (sideWalkWidth * 2),
             };
 
+            List<Rectangle> buildingRects = BSP.Partition(foundationRectangle, GetComponent<RNG>(), buildingWidth.x, buildingDepth.x);
+            buildingRectangles.AddRange(buildingRects);
+
+            for (int i = 0; i < buildingRects.Count; i++)
+            {
+                Rectangle buildingRect = buildingRects[i];
+                GameObject buildingObject = Instantiate(buildingPrefab);
+                buildingObject.name = "Building " + (i + 1);
+
+                Vector3 direction = buildingRect.Center3 - rect.Center3;
+
+                buildingObject.transform.position = foundationObject.transform.position + direction;
+                buildingObject.transform.localScale = buildingScale;
+                buildingObject.transform.parent = foundationObject.transform;
+
+                GenericBuildingGenerator generator = buildingObject.GetComponent<GenericBuildingGenerator>();
+                generator.InjectDependencies(rng, buildingPartManager);
+
+                int maxWidth = Mathf.FloorToInt(buildingRect.Width);
+                int maxDepth = Mathf.FloorToInt(buildingRect.Depth);
+                
+                
+                int size = maxWidth < maxDepth ? maxWidth : maxDepth;
+                
+                FloorPlan floorPlan = new();
+                floorPlan.Size = size;
+                // Vector2Int buildingSize = new(rng.Int(buildingWidth.x, buildingWidth.y),
+                //     rng.Int(buildingDepth.x, buildingDepth.y));
+
+                List<Row> plan = new();
+
+                for (int yIndex = 0; yIndex < size; yIndex++)
+                {
+                    List<int> data = new();                    
+                    for (int xIndex = 0; xIndex < size; xIndex++)
+                    {
+                        // TODO: Make nicer
+                        data.Add(buildingHeight.y);
+                    }
+                    plan.Add(new Row
+                    {
+                        Data = data.ToArray(),
+                    });
+                }
+
+                floorPlan.Plan = plan.ToArray();
+                generator.floorPlan = floorPlan;
+                
+                generator.Generate();
+                
+                buildings.Add(generator);
+            }
         }
     }
 
     public void FullClear()
     {
+        buildingRectangles.Clear();
+        
         for (int i = transform.childCount - 1; i >= 0; i--)
         {
             DestroyImmediate(transform.GetChild(i).gameObject);
@@ -140,5 +214,17 @@ public class CityGenerator : MonoBehaviour
         mesh.RecalculateNormals();
         mesh.RecalculateTangents();
         return mesh;
+    }
+
+    private void OnDrawGizmos()
+    {
+        Vector3 tPos = transform.position;
+		
+        foreach (Rectangle rectangle in buildingRectangles)
+        {
+            RectangleExtensions.Color = Color.green;
+            RectangleExtensions.Radius = 0.1f;
+            rectangle.Draw(tPos);
+        }
     }
 }

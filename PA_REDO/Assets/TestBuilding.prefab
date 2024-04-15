@@ -54,8 +54,6 @@ MonoBehaviour:
     Object: {fileID: 9013802453983961525}
     WallSection: {fileID: 8469601366596369031}
   wallDecos: []
-  buildingPartManager: {fileID: 0}
-  rng: {fileID: 0}
 --- !u!1 &236352894257594178
 GameObject:
   m_ObjectHideFlags: 0
@@ -276,8 +274,6 @@ MonoBehaviour:
     Object: {fileID: 1195421447244983209}
     WallSection: {fileID: 6202241555865475455}
   wallDecos: []
-  buildingPartManager: {fileID: 0}
-  rng: {fileID: 0}
 --- !u!1 &461895531169497907
 GameObject:
   m_ObjectHideFlags: 0
@@ -759,8 +755,6 @@ MonoBehaviour:
     Object: {fileID: 903663244051392398}
     WallSection: {fileID: 3727489011490660945}
   wallDecos: []
-  buildingPartManager: {fileID: 0}
-  rng: {fileID: 0}
 --- !u!1 &903663244051392398
 GameObject:
   m_ObjectHideFlags: 0
@@ -1037,8 +1031,6 @@ MonoBehaviour:
     Object: {fileID: 3161708783616413758}
     WallSection: {fileID: 6963968751908963661}
   wallDecos: []
-  buildingPartManager: {fileID: 0}
-  rng: {fileID: 0}
 --- !u!1 &1195421447244983209
 GameObject:
   m_ObjectHideFlags: 0
@@ -1176,8 +1168,6 @@ MonoBehaviour:
     Object: {fileID: 3675040782292386364}
     WallSection: {fileID: 6508379826282150926}
   wallDecos: []
-  buildingPartManager: {fileID: 0}
-  rng: {fileID: 0}
 --- !u!1 &1427872339055287820
 GameObject:
   m_ObjectHideFlags: 0
@@ -1672,7 +1662,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 6.47, y: 0, z: -0.44}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1111689173416176106}
   - {fileID: 6453739200529294822}
@@ -1697,6 +1687,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7de6f1a9764b3184899387ff7089d965, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  floorPlan:
+    Size: 3
+    Plan:
+    - Data: 010000000500000003000000
+    - Data: 050000000300000002000000
+    - Data: 030000000500000003000000
   blocks:
   - {fileID: 7316266537655920231}
   - {fileID: 2310121289394281482}
@@ -1707,14 +1703,6 @@ MonoBehaviour:
   - {fileID: 7877500550107790768}
   - {fileID: 6935643492647449580}
   - {fileID: 7038850212429986164}
-  floorPlan:
-    Size: 3
-    Plan:
-    - Data: 010000000500000003000000
-    - Data: 050000000300000002000000
-    - Data: 030000000500000003000000
-  rng: {fileID: 0}
-  buildingPartManager: {fileID: 0}
 --- !u!1 &2543085959275053631
 GameObject:
   m_ObjectHideFlags: 0
@@ -2399,8 +2387,6 @@ MonoBehaviour:
     Object: {fileID: 1899810684582659903}
     WallSection: {fileID: 9138502880490528960}
   wallDecos: []
-  buildingPartManager: {fileID: 0}
-  rng: {fileID: 0}
 --- !u!1 &2934422457716939097
 GameObject:
   m_ObjectHideFlags: 0
@@ -2847,8 +2833,6 @@ MonoBehaviour:
     Object: {fileID: 992015288768164565}
     WallSection: {fileID: 3886646130335365056}
   wallDecos: []
-  buildingPartManager: {fileID: 0}
-  rng: {fileID: 0}
 --- !u!1 &3619022213094696972
 GameObject:
   m_ObjectHideFlags: 0
@@ -2915,8 +2899,6 @@ MonoBehaviour:
     Object: {fileID: 5190538385308130545}
     WallSection: {fileID: 154385594270577953}
   wallDecos: []
-  buildingPartManager: {fileID: 0}
-  rng: {fileID: 0}
 --- !u!1 &3625391441235045748
 GameObject:
   m_ObjectHideFlags: 0
@@ -3058,8 +3040,6 @@ MonoBehaviour:
     Object: {fileID: 8676179136461924246}
     WallSection: {fileID: 1674375490956277689}
   wallDecos: []
-  buildingPartManager: {fileID: 0}
-  rng: {fileID: 0}
 --- !u!1 &3675040782292386364
 GameObject:
   m_ObjectHideFlags: 0
@@ -3999,8 +3979,6 @@ MonoBehaviour:
     Object: {fileID: 8328573017283483059}
     WallSection: {fileID: 1876476041971179803}
   wallDecos: []
-  buildingPartManager: {fileID: 0}
-  rng: {fileID: 0}
 --- !u!1 &4937989301265630809
 GameObject:
   m_ObjectHideFlags: 0
@@ -4221,8 +4199,6 @@ MonoBehaviour:
     Object: {fileID: 4720048183279355023}
     WallSection: {fileID: 7383892316199607211}
   wallDecos: []
-  buildingPartManager: {fileID: 0}
-  rng: {fileID: 0}
 --- !u!1 &5190538385308130545
 GameObject:
   m_ObjectHideFlags: 0
@@ -4937,8 +4913,6 @@ MonoBehaviour:
     Object: {fileID: 3684571995187203126}
     WallSection: {fileID: 5105833196766222152}
   wallDecos: []
-  buildingPartManager: {fileID: 0}
-  rng: {fileID: 0}
 --- !u!1 &5900802761999465322
 GameObject:
   m_ObjectHideFlags: 0
@@ -4993,8 +4967,6 @@ MonoBehaviour:
     Object: {fileID: 4024131697495778594}
     WallSection: {fileID: 485579660280074230}
   wallDecos: []
-  buildingPartManager: {fileID: 0}
-  rng: {fileID: 0}
 --- !u!1 &5995374929609718577
 GameObject:
   m_ObjectHideFlags: 0
@@ -5294,8 +5266,6 @@ MonoBehaviour:
     Object: {fileID: 5057799653151315893}
     WallSection: {fileID: 2999485328397148916}
   wallDecos: []
-  buildingPartManager: {fileID: 0}
-  rng: {fileID: 0}
 --- !u!1 &6551746451017941760
 GameObject:
   m_ObjectHideFlags: 0
@@ -5350,8 +5320,6 @@ MonoBehaviour:
     Object: {fileID: 2845687846802469980}
     WallSection: {fileID: 3337635043133701738}
   wallDecos: []
-  buildingPartManager: {fileID: 0}
-  rng: {fileID: 0}
 --- !u!1 &6564970859354725209
 GameObject:
   m_ObjectHideFlags: 0
@@ -5493,8 +5461,6 @@ MonoBehaviour:
     Object: {fileID: 2779576322383525191}
     WallSection: {fileID: 177199371133540120}
   wallDecos: []
-  buildingPartManager: {fileID: 0}
-  rng: {fileID: 0}
 --- !u!1 &6975435812582609741
 GameObject:
   m_ObjectHideFlags: 0
@@ -5723,8 +5689,6 @@ MonoBehaviour:
     Object: {fileID: 6211792834687182103}
     WallSection: {fileID: 3423819145779177956}
   wallDecos: []
-  buildingPartManager: {fileID: 0}
-  rng: {fileID: 0}
 --- !u!1 &7252534132151582188
 GameObject:
   m_ObjectHideFlags: 0
@@ -5965,8 +5929,6 @@ MonoBehaviour:
     Object: {fileID: 2543085959275053631}
     WallSection: {fileID: 295097228760615888}
   wallDecos: []
-  buildingPartManager: {fileID: 0}
-  rng: {fileID: 0}
 --- !u!1 &7847357798720645246
 GameObject:
   m_ObjectHideFlags: 0
@@ -6152,8 +6114,6 @@ MonoBehaviour:
     Object: {fileID: 4670925224701209891}
     WallSection: {fileID: 4260667753436847187}
   wallDecos: []
-  buildingPartManager: {fileID: 0}
-  rng: {fileID: 0}
 --- !u!1 &8155238444769275062
 GameObject:
   m_ObjectHideFlags: 0
@@ -6295,8 +6255,6 @@ MonoBehaviour:
     Object: {fileID: 1427872339055287820}
     WallSection: {fileID: 2031901246583892214}
   wallDecos: []
-  buildingPartManager: {fileID: 0}
-  rng: {fileID: 0}
 --- !u!1 &8267377870383565674
 GameObject:
   m_ObjectHideFlags: 0
@@ -6646,8 +6604,6 @@ MonoBehaviour:
     Object: {fileID: 2934422457716939097}
     WallSection: {fileID: 3331005332002085151}
   wallDecos: []
-  buildingPartManager: {fileID: 0}
-  rng: {fileID: 0}
 --- !u!1 &8764512259865135150
 GameObject:
   m_ObjectHideFlags: 0
@@ -6798,8 +6754,6 @@ MonoBehaviour:
     Object: {fileID: 4681930120639587049}
     WallSection: {fileID: 5303275614673885998}
   wallDecos: []
-  buildingPartManager: {fileID: 0}
-  rng: {fileID: 0}
 --- !u!1 &8799174367081819334
 GameObject:
   m_ObjectHideFlags: 0
@@ -6850,8 +6804,6 @@ MonoBehaviour:
     Object: {fileID: 9056529521232633249}
     WallSection: {fileID: 8522573930829174151}
   wallDecos: []
-  buildingPartManager: {fileID: 0}
-  rng: {fileID: 0}
 --- !u!1 &9013802453983961525
 GameObject:
   m_ObjectHideFlags: 0
@@ -7155,5 +7107,3 @@ MonoBehaviour:
     Object: {fileID: 2325066821790947195}
     WallSection: {fileID: 4879899723393298201}
   wallDecos: []
-  buildingPartManager: {fileID: 0}
-  rng: {fileID: 0}
