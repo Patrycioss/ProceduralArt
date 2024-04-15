@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using DataStructures;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 [RequireComponent(typeof(LayoutGenerator))]
 public class RoadGenerator : MonoBehaviour
@@ -64,6 +63,8 @@ public class RoadGenerator : MonoBehaviour
 	[SerializeField] private Material material;
 	[SerializeField] private Material crossWalkMaterial;
 	[SerializeField] private Material intersectionMaterial;
+	[SerializeField] private float roadWidth = 1.0f;
+	
 
 	private List<Rectangle> rects = new();
 	private List<Road> roads;

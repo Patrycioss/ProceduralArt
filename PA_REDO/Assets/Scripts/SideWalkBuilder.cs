@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using DataStructures;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class SideWalkBuilder : MonoBehaviour
 {
+    public float SideWalkHeight => sideWalkHeight;
+    public float SideWalkWidth => sideWalkWidth;
+    
     [SerializeField] private float sideWalkHeight = 0.2f;
     [SerializeField] private float sideWalkWidth = 1.0f;
     [SerializeField] private Material material;
-    
+
     private GameObject currentSideWalkObject;
 
     private class MeshData
@@ -90,7 +94,7 @@ public class SideWalkBuilder : MonoBehaviour
                 0 + offset, 5 + offset, 4 + offset,
             });
         }
-        
+
         if (_makeSides)
         {
             Vector3 offsetPos = startPos + new Vector3(_sideWalkSize * _size, 0, 0);
@@ -141,17 +145,23 @@ public class SideWalkBuilder : MonoBehaviour
 
     public void Build()
     {
+        Vector3 tPosition = transform.position;
+
         IReadOnlyDictionary<Rectangle, HashSet<Rectangle>> rectangleNeighbours =
             gameObject.GetComponent<LayoutGenerator>().RectanglesWithNeighbours;
 
         GameObject sideWalk = new GameObject("SideWalk");
         sideWalk.transform.parent = transform;
-        sideWalk.transform.position = transform.position;
-        
+        sideWalk.transform.position = tPosition;
+
+        Vector3 sideWalkPosition = sideWalk.transform.position;
+
 
         // Construct Mesh
         Mesh mesh = new();
+        mesh.indexFormat = IndexFormat.UInt32;
         MeshData meshData = new();
+
 
         foreach (Rectangle rect in rectangleNeighbours.Keys)
         {
@@ -207,7 +217,7 @@ public class SideWalkBuilder : MonoBehaviour
         mesh.vertices = meshData.Vertices.ToArray();
         mesh.uv = meshData.UVs.ToArray();
         mesh.triangles = meshData.Triangles.ToArray();
-
+        
         mesh.Optimize();
         mesh.RecalculateBounds();
         mesh.RecalculateNormals();
